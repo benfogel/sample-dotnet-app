@@ -38,6 +38,7 @@ catch (Exception ex)
 }
 
 builder.Services.AddSingleton<IDocumentStore>(documentStore);
+builder.Services.AddHostedService<BackgroundTrafficService>();
 
 var app = builder.Build();
 
@@ -121,7 +122,7 @@ public class BackgroundTrafficService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            Console.WriteLine($"Running performance test iteration at: {DateTimeOffset.Now}");
+            Console.WriteLine($"Running background service iteration at: {DateTimeOffset.Now}");
 
             try
             {
@@ -160,14 +161,13 @@ public class BackgroundTrafficService : BackgroundService
                     
                     File.Delete(tempFile);
                 }
-                 Console.WriteLine("Performance test iteration completed successfully.");
+                 Console.WriteLine("Background service iteration completed successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred during performance test iteration: {ex}");
+                Console.WriteLine($"An error occurred during background service iteration: {ex}");
             }
 
-            // Wait for the configured interval before the next run.
             await Task.Delay(_interval, stoppingToken);
         }
     }
