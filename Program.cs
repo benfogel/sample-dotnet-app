@@ -24,7 +24,6 @@ documentStore.Initialize();
 
 try
 {
-    var databaseName = documentStore.Database;
     var databaseRecord = documentStore.Maintenance.Server.Send(new GetDatabaseRecordOperation(databaseName));
     if (databaseRecord == null)
     {
