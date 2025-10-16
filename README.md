@@ -2,12 +2,16 @@
 
 A sample dotnet app that generates some DB load and file load per request and as a background service.
 
-## Prerequisites
-
-`dotnet` is needed
+## Installation
 
 ```powershell
-Invoke-WebRequest -Uri https://dot.net/v1/dotnet-install.ps1 -OutFile $env:TEMP\dotnet-install.ps1; & $env:TEMP\dotnet-install.ps1 -Version latest -InstallDir $env:ProgramFiles\dotnet
+Invoke-WebRequest -Uri "https://github.com/benfogel/sample-dotnet-app/archive/refs/heads/main.zip" -OutFile main.zip
+
+Expand-Archive -Path main.zip -DestinationPath . -Force
+
+cd sample-dotnet-app-main
+
+install.ps1
 ```
 
 ## Run
