@@ -1,0 +1,1 @@
+Invoke-WebRequest -Uri https://dot.net/v1/dotnet-install.ps1 -OutFile $env:TEMP\dotnet-install.ps1; & $env:TEMP\dotnet-install.ps1 -Version latest -InstallDir $env:ProgramFiles\dotnet
