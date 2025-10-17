@@ -55,7 +55,7 @@ try {
 
 # Start dotnet app
 # Define the action: Run 'dotnet' with specific arguments and working directory
-$Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command `"& { & dotnet run --urls 'http://*:8123' }`"" -WorkingDirectory "C:\Users\Administrator\sample-dotnet-app-main\"
+$Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command `"& { & 'C:/Program Files/dotnet/dotnet.exe' run --urls 'http://*:8123' }`"" -WorkingDirectory "C:\Users\Administrator\sample-dotnet-app-main\"
 
 # Define the trigger: Run at system startup
 $Trigger = New-ScheduledTaskTrigger -AtStartup
