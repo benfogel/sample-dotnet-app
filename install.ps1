@@ -52,3 +52,21 @@ try {
     Write-Host "Failed to run RavenDB setup script: $($_.Exception.Message)"
     exit 1
 }
+
+# Start dotnet app
+# Define the action: Run 'dotnet' with specific arguments and working directory
+$Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command `"& { & dotnet run --urls 'http://*:8123'`"" -WorkingDirectory "C:\Users\Administrator\sample-dotnet-app-main\"
+
+# Define the trigger: Run at system startup
+$Trigger = New-ScheduledTaskTrigger -AtStartup
+
+# Define the settings: Allow running on battery, etc.
+$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd
+
+# Register the task to run as the SYSTEM user with highest privileges
+Register-ScheduledTask -TaskName "StartDotNetApp" -Action $Action -Trigger $Trigger -Settings $Settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest
+
+Start-ScheduledTask -TaskName "StartDotNetApp"
+
+Write-Host "Task 'StartDotNetApp' created successfully."
+
