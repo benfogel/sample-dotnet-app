@@ -20,6 +20,10 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./app.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+USER root
+RUN apt-get update && apt-get install -y fio && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "app.dll"]
+COPY start.sh .
+RUN chmod +x start.sh
+ENTRYPOINT ["./start.sh"]
