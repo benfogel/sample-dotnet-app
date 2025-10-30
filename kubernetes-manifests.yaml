@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-dotnet-app-deployment
+  labels:
+    app: sample-dotnet-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-dotnet-app
+  template:
+    metadata:
+      labels:
+        app: sample-dotnet-app
+    spec:
+      containers:
+      - name: sample-dotnet-app
+        image: your-image-repo/sample-dotnet-app:latest # TODO: Replace with your actual image name
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DisableRavenDb
+          value: "true"
+        - name: LogDirectory
+          value: "/app/logs"
+        volumeMounts:
+        - name: log-volume
+          mountPath: /app/logs
+      volumes:
+      - name: log-volume
+        persistentVolumeClaim:
+          claimName: sample-dotnet-app-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-dotnet-app-service
+spec:
+  selector:
+    app: sample-dotnet-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sample-dotnet-app-pvc
+spec:
+  storageClassName: robin-repl-3
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
