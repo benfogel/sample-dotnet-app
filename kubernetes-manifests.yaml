@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
       - name: sample-dotnet-app
+        #image: gcr.io/cloud-alchemists-sandbox/kamek/sample-dotnet-app:v1.0.3 # TODO: Replace with your actual image name
         image: your-image-repo/sample-dotnet-app:latest # TODO: Replace with your actual image name
         ports:
         - containerPort: 8080
@@ -24,9 +25,15 @@ spec:
           value: "true"
         - name: LogDirectory
           value: "/app/logs"
+        - name: FIO_SIZE
+          value: "290G"
         volumeMounts:
         - name: log-volume
           mountPath: /app/logs
+        resources:
+          limits:
+            cpu: "12"
+            memory: "32Gi"
       volumes:
       - name: log-volume
         persistentVolumeClaim:
@@ -55,4 +62,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 300Gi

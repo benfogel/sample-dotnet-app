@@ -21,7 +21,7 @@ RUN dotnet publish "./app.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:Use
 
 FROM base AS final
 USER root
-RUN apt-get update && apt-get install -y fio && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y fio procps sysstat && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY start.sh .
