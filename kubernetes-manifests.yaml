@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: sample-dotnet-app
-        #image: gcr.io/cloud-alchemists-sandbox/kamek/sample-dotnet-app:v1.0.3 # TODO: Replace with your actual image name
-        image: your-image-repo/sample-dotnet-app:latest # TODO: Replace with your actual image name
+        image: gcr.io/cloud-alchemists-sandbox/kamek/sample-dotnet-app:v1.0.4 # TODO: Replace with your actual image name
+        # image: your-image-repo/sample-dotnet-app:latest # TODO: Replace with your actual image name
         ports:
         - containerPort: 8080
         env:
