@@ -61,7 +61,7 @@ $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command 
 $Trigger = New-ScheduledTaskTrigger -AtStartup
 
 # Define the settings: Allow running on battery, etc.
-$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd
+$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit 0
 
 # Register the task to run as the SYSTEM user with highest privileges
 Register-ScheduledTask -TaskName "StartDotNetApp" -Action $Action -Trigger $Trigger -Settings $Settings -User "NT AUTHORITY\SYSTEM" -RunLevel Highest
