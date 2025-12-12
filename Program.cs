@@ -9,6 +9,7 @@ using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 using System.Linq;
 
+var startTime = Stopwatch.StartNew();
 var builder = WebApplication.CreateBuilder(args);
 
 var databaseName = builder.Configuration.GetValue<string>("RavenDb:DatabaseName", "MyAppDatabase");
@@ -94,6 +95,7 @@ app.MapFallback(async ([FromServices] IDocumentStore store, [FromServices] IConf
 
         stopwatch.Stop();
         Console.WriteLine($"Successfully completed all operations in {stopwatch.ElapsedMilliseconds}ms for path: {context.Request.Path}");
+        RequestCounters.IncrementSuccess();
         
         return Results.Ok("OK");
     }
@@ -101,12 +103,38 @@ app.MapFallback(async ([FromServices] IDocumentStore store, [FromServices] IConf
     {
         stopwatch.Stop();
         Console.WriteLine($"Error processing request for path: {context.Request.Path}. Duration: {stopwatch.ElapsedMilliseconds}ms. Error: {ex.Message}");
+        RequestCounters.IncrementFailures();
         
         return Results.StatusCode(500);
     }
 });
 
+app.MapGet("/health", () => new {
+    Success = RequestCounters.Success,
+    Failures = RequestCounters.Failures,
+    Uptime = startTime.Elapsed
+});
+
 app.Run();
+
+public static class RequestCounters
+{
+    private static long _success = 0;
+    private static long _failures = 0;
+
+    public static long Success => _success;
+    public static long Failures => _failures;
+
+    public static void IncrementSuccess()
+    {
+        Interlocked.Increment(ref _success);
+    }
+
+    public static void IncrementFailures()
+    {
+        Interlocked.Increment(ref _failures);
+    }
+}
 
 public class BackgroundTrafficService : BackgroundService
 {
@@ -175,10 +203,12 @@ public class BackgroundTrafficService : BackgroundService
                     }
                 }
                  Console.WriteLine("Background service iteration completed successfully.");
+                 RequestCounters.IncrementSuccess();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred during background service iteration: {ex}");
+                RequestCounters.IncrementFailures();
             }
 
             await Task.Delay(_interval, stoppingToken);
